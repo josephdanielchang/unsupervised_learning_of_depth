@@ -1,0 +1,4 @@
+git rm --cached ./models/
+git rm --cached ./formatted_data/
+git rm --cached ./raw_data/
+git rm --cached ./test_depth_output/
