@@ -17,9 +17,9 @@ flags.DEFINE_string("ckpt_file", None, "checkpoint file")
 FLAGS = flags.FLAGS
 
 def main(_):
-    with open('data/kitti/test_files_edited.txt', 'rb') as f:			#r --> rb if read as byte without auto decoding
+    with open('data/test/cam_1_1_trim.txt', 'r') as f:			#r --> rb if read as byte without auto decoding
         test_files = f.readlines()
-        test_files = [t.decode() for t in test_files]
+#        test_files = [t.decode() for t in test_files]
         test_files = [FLAGS.dataset_dir + t[:-1] for t in test_files]
     if not os.path.exists(FLAGS.output_dir):
         os.makedirs(FLAGS.output_dir)
