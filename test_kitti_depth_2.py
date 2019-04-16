@@ -21,7 +21,7 @@ flags.DEFINE_string("ckpt_file", None, "checkpoint file")
 FLAGS = flags.FLAGS
 
 def main(_):
-    with open('data/cam_1_1/cam_1_1_trim_zoom_2.txt', 'r') as f:               #r --> rb if read as byte without auto decoding
+    with open('data/cam_1_1/cam_1_1_trim_zoom_1.txt', 'r') as f:               #r --> rb if read as byte without auto decoding
         test_files = f.readlines()
 #        test_files = [t.decode() for t in test_files]                       #decodes bytes to strings
         test_files = [FLAGS.dataset_dir + t[:-1] for t in test_files]
@@ -64,14 +64,27 @@ def main(_):
 
                 # im = scipy.misc.imread(test_files[idx])
                 # inputs[b] = scipy.misc.imresize(im, (FLAGS.img_height, FLAGS.img_width))
-            pred = sfm.inference(inputs, sess, mode='depth')                                   #predict depth
+            pred = sfm.inference(inputs, sess, mode='depth')                                   #########predict depth: OUTPUT
+
+            ### OUTPUT pred VALUES IN TEXT FILE
+            with open('depth_numpy_tf.txt','w') as f:
+                for (key,values) in pred.items():
+                    for value in values:
+                        print(value.shape)
+                        for r in range(FLAGS.img_height):
+                            print(str(r) + ', 0:' + str(FLAGS.img_width))
+                            f.write('\nROW ' + str(r) + ', COL 0:' + str(FLAGS.img_width) + '\n')
+                            f.write(str(value[r,:,0]))
+            ###
+
             for b in range(FLAGS.batch_size):
                 idx = t + b
-                if idx >= len(test_files):                                                     #exit if frame # + batch size greater than total frames   
+                if idx >= len(test_files):                               #exit if frame # + batch size greater than total frames
                     break
                 pred_all.append(pred['depth'][b,:,:,0])
-        np.save(output_scale_images, scaled_raw_all)                                            ###
+        np.save(output_scale_images, scaled_raw_all)                     ###
         np.save(output_file, pred_all)
 
 if __name__ == '__main__':
     tf.app.run()
+
